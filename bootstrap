@@ -1,0 +1,19 @@
+#!/bin/bash
+# Basic custom runtime
+
+# Read input from Lambda
+while true; do
+  HEADERS=$(mktemp)
+  EVENT_DATA=$(mktemp)
+
+  # Read request from Lambda runtime API
+  curl -s -D "$HEADERS" -o "$EVENT_DATA" "http://${AWS_LAMBDA_RUNTIME_API}/2018-06-01/runtime/invocation/next"
+  
+  REQUEST_ID=$(grep -Fi Lambda-Runtime-Aws-Request-Id "$HEADERS" | awk '{ print $2 }' | tr -d '\r')
+
+  # Execute handler (bash script)
+  RESPONSE=$(/var/task/function.sh "$EVENT_DATA")
+
+  # Send response
+  curl -s -X POST "http://${AWS_LAMBDA_RUNTIME_API}/2018-06-01/runtime/invocation/$REQUEST_ID/response" -d "$RESPONSE"
+done
