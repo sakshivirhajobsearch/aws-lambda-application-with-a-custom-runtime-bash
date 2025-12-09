@@ -19,7 +19,7 @@ No description provided.
 
 ## 🧠 Tech Stack Used
 
-- **Detected Technologies:** AWS, Dockerfile, Shell
+- **Detected Technologies:** Docker
 - **GitHub Topics:** None
 
 ---
